@@ -1,0 +1,46 @@
+# 编译生成的二进制文件
+go-sublist3r
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# 测试二进制文件
+*.test
+
+# 覆盖率工具生成的文件
+*.out
+*.prof
+*.cov
+
+# 依赖目录
+/vendor/
+
+# Go特定的临时文件
+*.o
+*.a
+
+# IDE配置文件
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+*~
+
+# 项目特定文件
+*.log
+/dist
+/bin
+
+# Go模块缓存
+/go.sum.bak
+/go.mod.bak
+
+# 临时保存的文件
+*.bak
+*.tmp
+
+# 输出文件
+/output/ 

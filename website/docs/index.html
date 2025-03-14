@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档 - go-Sublist3r</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/docs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="../index.html">go-Sublist3r</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html#features">特性</a></li>
+                    <li><a href="../index.html#installation">安装</a></li>
+                    <li><a href="../index.html#usage">使用方法</a></li>
+                    <li><a href="../index.html#api">API</a></li>
+                    <li><a href="index.html">文档</a></li>
+                    <li><a href="https://github.com/cyberspacesec/go-Sublist3r" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="docs-container">
+        <aside class="docs-sidebar">
+            <div class="sidebar-header">
+                <h3>文档导航</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#introduction">介绍</a></li>
+                    <li><a href="#installation">安装</a></li>
+                    <li><a href="#usage">使用方法</a>
+                        <ul>
+                            <li><a href="#basic-usage">基本用法</a></li>
+                            <li><a href="#docker-images">Docker镜像管理</a></li>
+                            <li><a href="#advanced-options">高级选项</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#api-server">API服务器</a></li>
+                    <li><a href="api.html">API文档</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="docs-content">
+            <section id="introduction" class="content-section">
+                <h1>go-Sublist3r 文档</h1>
+                <p>
+                    欢迎使用go-Sublist3r文档。本文档将帮助您了解如何安装和使用go-Sublist3r进行子域名枚举。
+                </p>
+                <p>
+                    go-Sublist3r是一个用Go语言实现的Sublist3r子域名枚举工具包装器。它提供了一种使用Docker运行Sublist3r的便捷方法，无需在系统上直接安装Python依赖项。
+                </p>
+                <div class="note info">
+                    <p><strong>提示</strong>: 如果您对API集成感兴趣，请查看<a href="api.html">API文档</a>。</p>
+                </div>
+            </section>
+            
+            <section id="installation" class="content-section">
+                <h2>安装</h2>
+                <h3>前提条件</h3>
+                <ul>
+                    <li>Go 1.16或更高版本</li>
+                    <li>Docker (可选，如果不可用会使用模拟模式)</li>
+                </ul>
+                
+                <h3>从源代码构建</h3>
+                <div class="code-block">
+                    <pre><code>git clone https://github.com/cyberspacesec/go-Sublist3r.git
+cd go-Sublist3r
+make build</code></pre>
+                </div>
+                
+                <h3>全局安装</h3>
+                <p>
+                    要将go-Sublist3r安装到系统中，使其可以在任何目录中使用，请运行：
+                </p>
+                <div class="code-block">
+                    <pre><code>make install</code></pre>
+                </div>
+                <p>
+                    这将把二进制文件复制到<code>/usr/local/bin/</code>目录中。
+                </p>
+            </section>
+            
+            <section id="usage" class="content-section">
+                <h2>使用方法</h2>
+                
+                <article id="basic-usage">
+                    <h3>基本用法</h3>
+                    <p>
+                        最基本的用法是指定一个要扫描的域名：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>go-sublist3r scan -d example.com</code></pre>
+                    </div>
+                    
+                    <p>
+                        这将为<code>example.com</code>域名枚举子域名并在控制台上显示结果。
+                    </p>
+                    
+                    <h4>保存结果到文件</h4>
+                    <p>
+                        使用<code>-o</code>参数将结果保存到文件：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>go-sublist3r scan -d example.com -o results.txt</code></pre>
+                    </div>
+                    
+                    <h4>使用暴力破解模块</h4>
+                    <p>
+                        添加<code>-b</code>标志启用暴力破解模块：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>go-sublist3r scan -d example.com -b</code></pre>
+                    </div>
+                    
+                    <h4>指定扫描端口</h4>
+                    <p>
+                        使用<code>-p</code>参数可以对发现的子域名扫描指定的TCP端口：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>go-sublist3r scan -d example.com -p 80,443</code></pre>
+                    </div>
+                </article>
+                
+                <article id="docker-images">
+                    <h3>Docker镜像管理</h3>
+                    <p>
+                        go-Sublist3r会自动处理Docker镜像，但您也可以使用以下命令手动管理镜像：
+                    </p>
+                    
+                    <h4>从Docker Hub拉取镜像</h4>
+                    <div class="code-block">
+                        <pre><code>go-sublist3r pull-docker-image</code></pre>
+                    </div>
+                    
+                    <h4>构建本地Docker镜像</h4>
+                    <div class="code-block">
+                        <pre><code>go-sublist3r build-docker-image</code></pre>
+                    </div>
+                    
+                    <div class="note info">
+                        <p><strong>提示</strong>: 默认情况下，程序会优先尝试从Docker Hub拉取镜像，仅当拉取失败时才会尝试构建本地镜像。</p>
+                    </div>
+                </article>
+                
+                <article id="advanced-options">
+                    <h3>高级选项</h3>
+                    
+                    <h4>完整的命令选项</h4>
+                    <ul>
+                        <li><code>-d, --domain</code>: 要枚举子域名的域名（必需）</li>
+                        <li><code>-b, --bruteforce</code>: 启用subbrute暴力破解模块</li>
+                        <li><code>-p, --ports</code>: 扫描找到的子域名上的指定tcp端口</li>
+                        <li><code>-v, --verbose</code>: 启用详细模式并实时显示结果</li>
+                        <li><code>-t, --threads</code>: 用于subbrute暴力破解的线程数（默认：30）</li>
+                        <li><code>-e, --engines</code>: 指定以逗号分隔的搜索引擎列表</li>
+                        <li><code>-o, --output</code>: 将结果保存到文本文件</li>
+                        <li><code>-n, --no-color</code>: 不带颜色输出</li>
+                    </ul>
+                    
+                    <h4>指定搜索引擎</h4>
+                    <p>
+                        使用<code>-e</code>参数可以指定要使用的搜索引擎：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>go-sublist3r scan -d example.com -e "baidu,yahoo,google"</code></pre>
+                    </div>
+                    
+                    <h4>调整线程数</h4>
+                    <p>
+                        使用<code>-t</code>参数可以调整暴力破解模块使用的线程数：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>go-sublist3r scan -d example.com -b -t 50</code></pre>
+                    </div>
+                </article>
+            </section>
+            
+            <section id="api-server" class="content-section">
+                <h2>API服务器</h2>
+                <p>
+                    go-Sublist3r提供了一个RESTful API，允许通过HTTP请求进行子域名枚举。
+                </p>
+                
+                <h3>启动API服务器</h3>
+                <div class="code-block">
+                    <pre><code>go-sublist3r api --port 8080 --workers 5 --capacity 100</code></pre>
+                </div>
+                
+                <h3>API服务器参数</h3>
+                <ul>
+                    <li><code>--port</code>: API服务器监听的端口号 (默认: 8080)</li>
+                    <li><code>--workers</code>: 处理扫描请求的工作线程数 (默认: 5)</li>
+                    <li><code>--capacity</code>: 最大并发扫描请求数 (默认: 100)</li>
+                    <li><code>--api-key</code>: API密钥，用于请求认证（留空表示不启用认证）</li>
+                </ul>
+                
+                <h3>使用API密钥保护API</h3>
+                <p>
+                    要启用API密钥认证，可以在启动API服务器时指定密钥：
+                </p>
+                <div class="code-block">
+                    <pre><code>go-sublist3r api --port 8080 --api-key "your-secret-key"</code></pre>
+                </div>
+                
+                <div class="note warning">
+                    <p><strong>安全提示</strong>: 在生产环境中使用API时，强烈建议启用API密钥认证以保护API不被未授权访问。</p>
+                </div>
+                
+                <div class="cta">
+                    <a href="api.html" class="btn primary">查看完整API文档</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>go-Sublist3r</h2>
+                    <p>© 2023 CyberspaceSec</p>
+                </div>
+                <div class="footer-links">
+                    <h3>链接</h3>
+                    <ul>
+                        <li><a href="https://github.com/cyberspacesec/go-Sublist3r">GitHub</a></li>
+                        <li><a href="https://github.com/cyberspacesec/go-Sublist3r/issues">问题反馈</a></li>
+                        <li><a href="https://github.com/aboul3la/Sublist3r">原始Sublist3r项目</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>本项目是Ahmed Aboul-Ela的<a href="https://github.com/aboul3la/Sublist3r" target="_blank">Sublist3r</a>的Go语言封装器。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html> 

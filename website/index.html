@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>go-Sublist3r - Go语言实现的子域名枚举工具</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>go-Sublist3r</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">特性</a></li>
+                    <li><a href="#installation">安装</a></li>
+                    <li><a href="#usage">使用方法</a></li>
+                    <li><a href="#api">API</a></li>
+                    <li><a href="docs/index.html">文档</a></li>
+                    <li><a href="https://github.com/cyberspacesec/go-Sublist3r" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Go语言实现的子域名枚举工具</h2>
+                <p>
+                    go-Sublist3r 是一个用Go语言实现的Sublist3r子域名枚举工具包装器。
+                    它提供了一种使用Docker运行Sublist3r的便捷方法，无需在系统上直接安装Python依赖项。
+                </p>
+                <div class="cta-buttons">
+                    <a href="#installation" class="btn primary">快速开始</a>
+                    <a href="https://github.com/cyberspacesec/go-Sublist3r" class="btn secondary" target="_blank">查看源码</a>
+                </div>
+            </div>
+            <div class="hero-terminal">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <div class="terminal-body">
+                    <pre><code>$ go-sublist3r scan -d example.com
+_____      _____ _     _    _ _____  _____      
+|  __ \    / ____| |   | |  | |_   _|/ ____|     
+| |  \/ __| (___ | |_  | |  | | | | | (___   ___ 
+| | __ / _ \___ \| __| | |  | | | |  \___ \ / __|
+| |_\ \  __/___) | |_  | |__| |_| |_ ____) | (__ 
+ \____/\___|____/ \__|  \____/|_____|_____/ \___|
+                                                 
+                   version 1.0                   
+        https://github.com/cyberspacesec/go-Sublist3r
+
+正在扫描域名: example.com
+
+Found subdomains:
+www.example.com
+mail.example.com
+api.example.com
+blog.example.com
+dev.example.com</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>特性</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-docker"></i></div>
+                    <h3>Docker集成</h3>
+                    <p>自动使用Docker Hub上的公共镜像或构建Sublist3r的Docker镜像，无需手动配置环境</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-terminal"></i></div>
+                    <h3>一致的命令行界面</h3>
+                    <p>与原始Sublist3r选项一致的命令行界面，让熟悉原工具的用户可以无缝切换</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-download"></i></div>
+                    <h3>自动下载</h3>
+                    <p>首次运行时自动下载或创建Docker镜像，简化用户的初始配置过程</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-file-export"></i></div>
+                    <h3>文件处理</h3>
+                    <p>自动处理容器和主机之间的输出文件传输，使用户可以方便地操作扫描结果</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-laptop-code"></i></div>
+                    <h3>降级模拟</h3>
+                    <p>当Docker不可用时提供模拟功能，确保工具在各种环境中都能工作</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-server"></i></div>
+                    <h3>RESTful API</h3>
+                    <p>提供RESTful API，支持远程调用和与其他系统集成，更适合自动化工作流</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                    <h3>API密钥认证</h3>
+                    <p>支持API密钥认证，保护API访问安全，防止未经授权的使用</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-sync"></i></div>
+                    <h3>同步/异步API</h3>
+                    <p>提供异步和同步API接口，满足不同的集成需求和使用场景</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="installation" class="installation">
+        <div class="container">
+            <h2>安装</h2>
+            
+            <h3>前提条件</h3>
+            <ul>
+                <li>Go 1.16或更高版本</li>
+                <li>Docker (可选，如果不可用会使用模拟模式)</li>
+            </ul>
+
+            <h3>从源代码构建</h3>
+            <div class="code-block">
+                <pre><code>git clone https://github.com/cyberspacesec/go-Sublist3r.git
+cd go-Sublist3r
+make build</code></pre>
+            </div>
+
+            <h3>全局安装</h3>
+            <div class="code-block">
+                <pre><code>make install</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="usage" class="usage">
+        <div class="container">
+            <h2>使用方法</h2>
+
+            <h3>获取Docker镜像</h3>
+            <p>程序会自动获取镜像，但您也可以使用以下命令显式操作:</p>
+            
+            <h4>从Docker Hub拉取镜像 (推荐)</h4>
+            <div class="code-block">
+                <pre><code>go-sublist3r pull-docker-image</code></pre>
+            </div>
+
+            <h4>构建本地Docker镜像</h4>
+            <div class="code-block">
+                <pre><code>go-sublist3r build-docker-image</code></pre>
+            </div>
+
+            <h3>运行子域名枚举</h3>
+            <p>基本用法:</p>
+            <div class="code-block">
+                <pre><code>go-sublist3r scan -d example.com</code></pre>
+            </div>
+
+            <p>使用其他选项:</p>
+            <div class="code-block">
+                <pre><code>go-sublist3r scan -d example.com -b -p 80,443 -v -o results.txt</code></pre>
+            </div>
+
+            <h3>启动API服务器</h3>
+            <p>启动API服务器，允许通过HTTP请求进行子域名枚举:</p>
+            <div class="code-block">
+                <pre><code>go-sublist3r api --port 8080 --workers 5 --capacity 100</code></pre>
+            </div>
+
+            <p>启动带有API密钥认证的API服务器:</p>
+            <div class="code-block">
+                <pre><code>go-sublist3r api --port 8080 --api-key "your-secret-key"</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="api" class="api">
+        <div class="container">
+            <h2>API使用</h2>
+            <p>go-Sublist3r提供了RESTful API，支持远程调用和与其他系统集成。</p>
+
+            <h3>API端点</h3>
+            <div class="api-endpoints">
+                <div class="endpoint">
+                    <h4><span class="method">POST</span> /api/v1/scan</h4>
+                    <p>启动一个新的子域名枚举扫描任务</p>
+                </div>
+                <div class="endpoint">
+                    <h4><span class="method">POST</span> /api/v1/scan/sync</h4>
+                    <p>启动一个同步扫描并等待结果（最多5分钟）</p>
+                </div>
+                <div class="endpoint">
+                    <h4><span class="method">GET</span> /api/v1/scan/{id}</h4>
+                    <p>获取指定扫描任务的状态和结果</p>
+                </div>
+                <div class="endpoint">
+                    <h4><span class="method">GET</span> /api/v1/scans</h4>
+                    <p>获取所有扫描任务的列表</p>
+                </div>
+            </div>
+
+            <div class="cta">
+                <a href="docs/api.html" class="btn primary">查看完整API文档</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>go-Sublist3r</h2>
+                    <p>© 2023 CyberspaceSec</p>
+                </div>
+                <div class="footer-links">
+                    <h3>链接</h3>
+                    <ul>
+                        <li><a href="https://github.com/cyberspacesec/go-Sublist3r">GitHub</a></li>
+                        <li><a href="https://github.com/cyberspacesec/go-Sublist3r/issues">问题反馈</a></li>
+                        <li><a href="https://github.com/aboul3la/Sublist3r">原始Sublist3r项目</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>本项目是Ahmed Aboul-Ela的<a href="https://github.com/aboul3la/Sublist3r" target="_blank">Sublist3r</a>的Go语言封装器。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html> 

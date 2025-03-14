@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 文档 - go-Sublist3r</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/docs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="../index.html">go-Sublist3r</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html#features">特性</a></li>
+                    <li><a href="../index.html#installation">安装</a></li>
+                    <li><a href="../index.html#usage">使用方法</a></li>
+                    <li><a href="../index.html#api">API</a></li>
+                    <li><a href="index.html">文档</a></li>
+                    <li><a href="https://github.com/cyberspacesec/go-Sublist3r" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="docs-container">
+        <aside class="docs-sidebar">
+            <div class="sidebar-header">
+                <h3>API文档</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#overview">API概述</a></li>
+                    <li><a href="#authentication">认证</a></li>
+                    <li><a href="#endpoints">API端点</a>
+                        <ul>
+                            <li><a href="#post-scan">POST /api/v1/scan</a></li>
+                            <li><a href="#post-scan-sync">POST /api/v1/scan/sync</a></li>
+                            <li><a href="#get-scan">GET /api/v1/scan/{id}</a></li>
+                            <li><a href="#get-scans">GET /api/v1/scans</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#examples">使用示例</a>
+                        <ul>
+                            <li><a href="#curl-examples">Curl示例</a></li>
+                            <li><a href="#python-examples">Python示例</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="docs-content">
+            <section id="overview" class="content-section">
+                <h1>go-Sublist3r API文档</h1>
+                <p>
+                    go-Sublist3r提供了RESTful API，支持远程调用和与其他系统集成。
+                    这个API允许您以编程方式启动子域名枚举扫描、检查扫描状态和获取结果。
+                </p>
+                <p>
+                    API服务器可通过以下命令启动：
+                </p>
+                <div class="code-block">
+                    <pre><code>go-sublist3r api --port 8080 --workers 5 --capacity 100</code></pre>
+                </div>
+                <p>
+                    使用API密钥保护API：
+                </p>
+                <div class="code-block">
+                    <pre><code>go-sublist3r api --port 8080 --api-key "your-secret-key"</code></pre>
+                </div>
+                <p>
+                    参数说明:
+                </p>
+                <ul>
+                    <li><code>--port</code>: API服务器监听的端口号 (默认: 8080)</li>
+                    <li><code>--workers</code>: 处理扫描请求的工作线程数 (默认: 5)</li>
+                    <li><code>--capacity</code>: 最大并发扫描请求数 (默认: 100)</li>
+                    <li><code>--api-key</code>: API密钥，用于请求认证（留空表示不启用认证）</li>
+                </ul>
+            </section>
+            
+            <section id="authentication" class="content-section">
+                <h2>API认证</h2>
+                <p>
+                    如果API服务器启用了API密钥认证，所有API请求都需要包含有效的API密钥。
+                    有两种方式提供API密钥：
+                </p>
+                <ol>
+                    <li><strong>HTTP请求头</strong>: 在请求头中添加 <code>X-API-Key: your_api_key</code></li>
+                    <li><strong>URL查询参数</strong>: 在URL中添加 <code>?api_key=your_api_key</code></li>
+                </ol>
+                <p>
+                    API文档页面 (<code>/docs</code>) 无需认证即可访问。
+                </p>
+                <div class="note info">
+                    <p><strong>注意</strong>: 确保使用HTTPS传输API密钥以保护其安全性，尤其是在生产环境中。</p>
+                </div>
+            </section>
+            
+            <section id="endpoints" class="content-section">
+                <h2>API端点</h2>
+                
+                <article id="post-scan" class="endpoint-article">
+                    <h3><span class="method post">POST</span> /api/v1/scan</h3>
+                    <p>启动一个新的子域名枚举扫描任务。</p>
+                    
+                    <h4>请求参数 (JSON):</h4>
+                    <table class="api-table">
+                        <thead>
+                            <tr>
+                                <th>参数</th>
+                                <th>类型</th>
+                                <th>必需</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>domain</td>
+                                <td>string</td>
+                                <td>是</td>
+                                <td>要枚举子域名的域名</td>
+                            </tr>
+                            <tr>
+                                <td>bruteforce</td>
+                                <td>boolean</td>
+                                <td>否</td>
+                                <td>是否启用暴力破解模块 (默认: false)</td>
+                            </tr>
+                            <tr>
+                                <td>ports</td>
+                                <td>string</td>
+                                <td>否</td>
+                                <td>要扫描的端口，如 "80,443"</td>
+                            </tr>
+                            <tr>
+                                <td>verbose</td>
+                                <td>boolean</td>
+                                <td>否</td>
+                                <td>是否启用详细输出 (默认: false)</td>
+                            </tr>
+                            <tr>
+                                <td>threads</td>
+                                <td>integer</td>
+                                <td>否</td>
+                                <td>线程数 (默认: 30)</td>
+                            </tr>
+                            <tr>
+                                <td>engines</td>
+                                <td>string</td>
+                                <td>否</td>
+                                <td>使用的搜索引擎，如 "baidu,yahoo"</td>
+                            </tr>
+                            <tr>
+                                <td>no_color</td>
+                                <td>boolean</td>
+                                <td>否</td>
+                                <td>是否禁用颜色输出 (默认: false)</td>
+                            </tr>
+                            <tr>
+                                <td>callback_url</td>
+                                <td>string</td>
+                                <td>否</td>
+                                <td>扫描完成后的回调 URL</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>请求示例:</h4>
+                    <div class="code-block">
+                        <pre><code>{
+  "domain": "example.com",
+  "bruteforce": true,
+  "ports": "80,443",
+  "verbose": true,
+  "threads": 40,
+  "engines": "baidu,yahoo",
+  "no_color": false,
+  "callback_url": "https://your-callback-server.com/notify"
+}</code></pre>
+                    </div>
+
+                    <h4>响应:</h4>
+                    <div class="code-block">
+                        <pre><code>{
+  "id": "5f3a9c21-7b1e-4c49-8a0d-3e51735ce83a",
+  "message": "Scan started"
+}</code></pre>
+                    </div>
+                </article>
+                
+                <article id="post-scan-sync" class="endpoint-article">
+                    <h3><span class="method post">POST</span> /api/v1/scan/sync</h3>
+                    <p>启动一个新的子域名枚举扫描任务并等待扫描完成，返回完整结果。这是一个同步接口，请求会阻塞直到扫描完成或超时。</p>
+                    
+                    <h4>请求参数 (JSON):</h4>
+                    <table class="api-table">
+                        <thead>
+                            <tr>
+                                <th>参数</th>
+                                <th>类型</th>
+                                <th>必需</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>domain</td>
+                                <td>string</td>
+                                <td>是</td>
+                                <td>要枚举子域名的域名</td>
+                            </tr>
+                            <tr>
+                                <td>bruteforce</td>
+                                <td>boolean</td>
+                                <td>否</td>
+                                <td>是否启用暴力破解模块 (默认: false)</td>
+                            </tr>
+                            <tr>
+                                <td>ports</td>
+                                <td>string</td>
+                                <td>否</td>
+                                <td>要扫描的端口，如 "80,443"</td>
+                            </tr>
+                            <tr>
+                                <td>verbose</td>
+                                <td>boolean</td>
+                                <td>否</td>
+                                <td>是否启用详细输出 (默认: false)</td>
+                            </tr>
+                            <tr>
+                                <td>threads</td>
+                                <td>integer</td>
+                                <td>否</td>
+                                <td>线程数 (默认: 30)</td>
+                            </tr>
+                            <tr>
+                                <td>engines</td>
+                                <td>string</td>
+                                <td>否</td>
+                                <td>使用的搜索引擎，如 "baidu,yahoo"</td>
+                            </tr>
+                            <tr>
+                                <td>no_color</td>
+                                <td>boolean</td>
+                                <td>否</td>
+                                <td>是否禁用颜色输出 (默认: false)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="note warning">
+                        <p><strong>注意</strong>: 此接口有5分钟超时限制，不支持回调URL参数。对于预计耗时较长的扫描任务，建议使用异步API。</p>
+                    </div>
+                    
+                    <h4>请求示例:</h4>
+                    <div class="code-block">
+                        <pre><code>{
+  "domain": "example.com",
+  "bruteforce": false,
+  "ports": "80,443",
+  "verbose": true,
+  "threads": 40
+}</code></pre>
+                    </div>
+
+                    <h4>响应:</h4>
+                    <div class="code-block">
+                        <pre><code>{
+  "id": "5f3a9c21-7b1e-4c49-8a0d-3e51735ce83a",
+  "status": "completed",
+  "domain": "example.com",
+  "start_time": "2023-08-15T10:30:45Z",
+  "end_time": "2023-08-15T10:32:12Z",
+  "results": [
+    "www.example.com",
+    "mail.example.com",
+    "blog.example.com",
+    "api.example.com",
+    "dev.example.com"
+  ]
+}</code></pre>
+                    </div>
+                </article>
+                
+                <article id="get-scan" class="endpoint-article">
+                    <h3><span class="method get">GET</span> /api/v1/scan/{id}</h3>
+                    <p>获取指定扫描任务的状态和结果。</p>
+                    
+                    <h4>URL 参数:</h4>
+                    <table class="api-table">
+                        <thead>
+                            <tr>
+                                <th>参数</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>扫描任务 ID</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>响应:</h4>
+                    <div class="code-block">
+                        <pre><code>{
+  "id": "5f3a9c21-7b1e-4c49-8a0d-3e51735ce83a",
+  "status": "completed",
+  "domain": "example.com",
+  "start_time": "2023-08-15T10:30:45Z",
+  "end_time": "2023-08-15T10:32:12Z",
+  "results": [
+    "www.example.com",
+    "mail.example.com",
+    "blog.example.com",
+    "api.example.com",
+    "dev.example.com"
+  ]
+}</code></pre>
+                    </div>
+
+                    <h4>可能的状态值:</h4>
+                    <ul>
+                        <li><code>pending</code>: 任务已创建但尚未开始执行</li>
+                        <li><code>running</code>: 任务正在执行中</li>
+                        <li><code>completed</code>: 任务已成功完成</li>
+                        <li><code>failed</code>: 任务执行失败</li>
+                    </ul>
+                </article>
+                
+                <article id="get-scans" class="endpoint-article">
+                    <h3><span class="method get">GET</span> /api/v1/scans</h3>
+                    <p>获取所有扫描任务的列表。</p>
+                    
+                    <h4>响应:</h4>
+                    <div class="code-block">
+                        <pre><code>[
+  {
+    "id": "5f3a9c21-7b1e-4c49-8a0d-3e51735ce83a",
+    "status": "completed",
+    "domain": "example.com",
+    "start_time": "2023-08-15T10:30:45Z",
+    "end_time": "2023-08-15T10:32:12Z"
+  },
+  {
+    "id": "8e2c7d34-5f1a-42b3-9d6c-1a2b3c4d5e6f",
+    "status": "running",
+    "domain": "test.com",
+    "start_time": "2023-08-15T10:45:12Z",
+    "end_time": "0001-01-01T00:00:00Z"
+  }
+]</code></pre>
+                    </div>
+                </article>
+            </section>
+            
+            <section id="examples" class="content-section">
+                <h2>使用示例</h2>
+                
+                <article id="curl-examples">
+                    <h3>Curl示例</h3>
+                    
+                    <h4>启动扫描 (无认证)</h4>
+                    <div class="code-block">
+                        <pre><code>curl -X POST http://localhost:8080/api/v1/scan \
+  -H "Content-Type: application/json" \
+  -d '{
+    "domain": "example.com",
+    "bruteforce": false,
+    "ports": "80,443",
+    "verbose": true
+  }'</code></pre>
+                    </div>
+
+                    <h4>使用同步接口 (无认证)</h4>
+                    <div class="code-block">
+                        <pre><code>curl -X POST http://localhost:8080/api/v1/scan/sync \
+  -H "Content-Type: application/json" \
+  -d '{
+    "domain": "example.com",
+    "bruteforce": false,
+    "ports": "80,443"
+  }'</code></pre>
+                    </div>
+
+                    <h4>启动扫描 (有认证)</h4>
+                    <div class="code-block">
+                        <pre><code>curl -X POST http://localhost:8080/api/v1/scan \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: your_api_key" \
+  -d '{
+    "domain": "example.com",
+    "bruteforce": false,
+    "ports": "80,443",
+    "verbose": true
+  }'</code></pre>
+                    </div>
+
+                    <h4>使用同步接口 (有认证)</h4>
+                    <div class="code-block">
+                        <pre><code>curl -X POST http://localhost:8080/api/v1/scan/sync \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: your_api_key" \
+  -d '{
+    "domain": "example.com",
+    "bruteforce": false
+  }'</code></pre>
+                    </div>
+
+                    <h4>使用URL参数进行认证</h4>
+                    <div class="code-block">
+                        <pre><code>curl -X GET "http://localhost:8080/api/v1/scan/5f3a9c21-7b1e-4c49-8a0d-3e51735ce83a?api_key=your_api_key"</code></pre>
+                    </div>
+
+                    <h4>获取所有扫描</h4>
+                    <div class="code-block">
+                        <pre><code>curl -X GET http://localhost:8080/api/v1/scans -H "X-API-Key: your_api_key"</code></pre>
+                    </div>
+                </article>
+                
+                <article id="python-examples">
+                    <h3>Python示例</h3>
+                    
+                    <h4>方法1: 使用异步接口</h4>
+                    <div class="code-block">
+                        <pre><code>import requests
+import json
+import time
+
+# API密钥
+api_key = "your_api_key"
+
+# 添加认证头
+headers = {
+    "Content-Type": "application/json",
+    "X-API-Key": api_key
+}
+
+def async_scan():
+    # 启动扫描
+    scan_data = {
+        "domain": "example.com",
+        "bruteforce": True,
+        "ports": "80,443",
+        "verbose": True
+    }
+
+    response = requests.post(
+        "http://localhost:8080/api/v1/scan", 
+        headers=headers, 
+        json=scan_data
+    )
+    scan_id = response.json()["id"]
+    print(f"Scan started with ID: {scan_id}")
+
+    # 等待扫描完成
+    status = "pending"
+    while status in ["pending", "running"]:
+        time.sleep(5)  # 每5秒轮询一次
+        status_response = requests.get(
+            f"http://localhost:8080/api/v1/scan/{scan_id}",
+            headers=headers
+        )
+        status_data = status_response.json()
+        status = status_data["status"]
+        print(f"Scan status: {status}")
+
+    # 当状态为 completed 时获取结果
+    if status == "completed":
+        print(f"Found {len(status_data['results'])} subdomains:")
+        for subdomain in status_data["results"]:
+            print(subdomain)
+    else:
+        print(f"Scan failed: {status_data.get('error', 'Unknown error')}")
+
+# 执行异步扫描
+async_scan()</code></pre>
+                    </div>
+
+                    <h4>方法2: 使用同步接口(更简单)</h4>
+                    <div class="code-block">
+                        <pre><code>import requests
+import json
+
+# API密钥
+api_key = "your_api_key"
+
+# 添加认证头
+headers = {
+    "Content-Type": "application/json",
+    "X-API-Key": api_key
+}
+
+def sync_scan():
+    # 使用同步接口启动扫描并等待结果
+    scan_data = {
+        "domain": "example.com",
+        "bruteforce": False,
+        "ports": "80,443",
+    }
+
+    response = requests.post(
+        "http://localhost:8080/api/v1/scan/sync", 
+        headers=headers, 
+        json=scan_data,
+        timeout=300  # 5分钟超时
+    )
+    
+    if response.status_code == 200:
+        result = response.json()
+        print(f"Scan completed for: {result['domain']}")
+        print(f"Found {len(result['results'])} subdomains:")
+        for subdomain in result["results"]:
+            print(subdomain)
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+
+# 执行同步扫描
+sync_scan()</code></pre>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>go-Sublist3r</h2>
+                    <p>© 2023 CyberspaceSec</p>
+                </div>
+                <div class="footer-links">
+                    <h3>链接</h3>
+                    <ul>
+                        <li><a href="https://github.com/cyberspacesec/go-Sublist3r">GitHub</a></li>
+                        <li><a href="https://github.com/cyberspacesec/go-Sublist3r/issues">问题反馈</a></li>
+                        <li><a href="https://github.com/aboul3la/Sublist3r">原始Sublist3r项目</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>本项目是Ahmed Aboul-Ela的<a href="https://github.com/aboul3la/Sublist3r" target="_blank">Sublist3r</a>的Go语言封装器。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html> 

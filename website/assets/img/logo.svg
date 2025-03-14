@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="100" cy="100" r="90" fill="#2c3e50"/>
+  
+  <!-- 字母G -->
+  <path d="M62 70C62 65.5817 65.5817 62 70 62H85C89.4183 62 93 65.5817 93 70V90C93 94.4183 89.4183 98 85 98H74V84H85V72H74V90C74 94.4183 70.4183 98 66 98H62V70Z" fill="#3498db"/>
+  
+  <!-- 字母S -->
+  <path d="M111 62H128C132.418 62 136 65.5817 136 70V75C136 79.4183 132.418 83 128 83H119V85H136V98H119C114.582 98 111 94.4183 111 90V85C111 80.5817 114.582 77 119 77H128V72H111V62Z" fill="#3498db"/>
+  
+  <!-- 下方文本线 -->
+  <rect x="55" y="120" width="90" height="5" rx="2.5" fill="#3498db"/>
+  <rect x="65" y="130" width="70" height="5" rx="2.5" fill="#3498db"/>
+  <rect x="75" y="140" width="50" height="5" rx="2.5" fill="#3498db"/>
+  
+  <!-- 雷达扫描线 -->
+  <path d="M100,25 A75,75 0 0 1 169.5,88" stroke="#e74c3c" stroke-width="3" fill="none">
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="rotate"
+      from="0 100 100"
+      to="360 100 100"
+      dur="5s"
+      repeatCount="indefinite"
+    />
+  </path>
+  
+  <!-- 扫描点 -->
+  <circle cx="150" cy="75" r="4" fill="#e74c3c">
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="rotate"
+      from="0 100 100"
+      to="360 100 100"
+      dur="5s"
+      repeatCount="indefinite"
+    />
+  </animateMotion>
+  </circle>
+  
+  <!-- 子域名点 -->
+  <circle cx="70" cy="130" r="2" fill="#ffffff">
+    <animate
+      attributeName="opacity"
+      values="0;1;0"
+      dur="2s"
+      repeatCount="indefinite"
+    />
+  </circle>
+  <circle cx="120" cy="110" r="2" fill="#ffffff">
+    <animate
+      attributeName="opacity"
+      values="0;1;0"
+      dur="3s"
+      repeatCount="indefinite"
+    />
+  </circle>
+  <circle cx="90" cy="150" r="2" fill="#ffffff">
+    <animate
+      attributeName="opacity"
+      values="0;1;0"
+      dur="2.5s"
+      repeatCount="indefinite"
+    />
+  </circle>
+  <circle cx="130" cy="140" r="2" fill="#ffffff">
+    <animate
+      attributeName="opacity"
+      values="0;1;0"
+      dur="1.8s"
+      repeatCount="indefinite"
+    />
+  </circle>
+</svg>

@@ -1,0 +1,45 @@
+name: Deploy Website to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - 'website/**'
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+      - main
+    paths:
+      - 'website/**'
+
+jobs:
+  deploy:
+    # 只在PR被合并或直接推送到主分支时运行
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # 完整克隆以获取所有历史记录
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages # 部署到的分支
+          folder: website  # 包含要部署内容的文件夹
+          clean: true      # 自动清理旧文件
+          token: ${{ secrets.GITHUB_TOKEN }} # GitHub自动提供的token
+      
+      - name: Display deployment information
+        run: |
+          echo "🚀 Website deployed successfully to GitHub Pages!"
+          echo "🔗 Visit your site at https://$(echo ${{ github.repository_owner }}).github.io/$(echo ${{ github.event.repository.name }})" 
